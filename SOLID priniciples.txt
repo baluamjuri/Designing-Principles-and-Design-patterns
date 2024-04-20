@@ -1,0 +1,5 @@
+Single Responsibility - Each class should have single responsibility which mean it should perform operations on single task
+Open/Closed principle - Entities should be open for enhancement and closed for modifications
+Liskov's substitution principle - Parent class should be replaceable with Child class(Functions that use pointers or references to base classes must be able to use objects of derived classes without knowing it)
+Interface seggregation - Interfaces should be split into smaller interfaces (Clients should not be forced to depend upon interfaces that they do not use)
+Dependency inversion - Depend upon abstractions, [not] concretes
