@@ -1,0 +1,41 @@
+This Pattern is used to make two unrelated interfaces can work together. The object, that joins these unrelated interfaces, is called an Adapter.
+Components of Adapter Design Pattern:
+=====================================
+1. Target Interface
+2. Adaptee
+3. Adapter
+4. Client
+Problem Statement:
+==================
+Let’s consider a scenario where we have an existing system that uses a LegacyPrinter class with a method named printDocument() which we want to adapt into a new system that expects a Printer interface with a method named print(). We’ll use the Adapter design pattern to make these two interfaces compatible.
+
+1. Target Interface
+
+class Printer{
+	void print();
+}
+
+2.Adaptee
+
+class LegacyPrinter{
+	void printDocument(){
+		system.out.println("Legacy Printer printed the document");
+	}
+}
+
+3. Adapter
+
+class PrinterAdapter implements Printer {
+private LegacyPrinter legacyPrinter;
+ 
+@Override
+public void print() {
+        legacyPrinter.printDocument();
+    }
+}
+
+4. Client code:
+
+void clientCode(Printer printer) {
+    printer.print();
+}
