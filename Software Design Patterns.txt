@@ -1,0 +1,386 @@
+Types of Software Design Patterns
+Creational Design Patterns
+	Factory Method Design Pattern - Provides an interface for creating objects in a superclass, but allows subclasses to alter the type of objects that will be created.
+	
+	https://howtodoinjava.com/design-patterns/creational/implementing-factory-design-pattern-in-java/
+	
+	public enum CarType {
+		SMALL, SEDAN, LUXURY
+	}
+	
+	public abstract class Car {
+	
+		private CarType model;
+
+		public Car(CarType model) {
+			this.model = model;
+			arrangeParts();
+		}
+
+		private void arrangeParts() {
+			// Do one time processing here
+		}
+
+		// Do subclass level processing in this method
+		protected abstract void construct();
+
+		public CarType getModel() {
+			return model;
+		}
+
+		public void setModel(CarType model) {
+			this.model = model;
+		}
+	}
+
+	public class LuxuryCar extends Car {
+
+		LuxuryCar() {
+			super(CarType.LUXURY);
+			construct();
+		}
+
+		@Override
+		protected void construct() {
+			System.out.println("Building luxury car");
+			// add accessories
+		}
+	}
+	
+	public class SmallCar extends Car {
+
+		SmallCar() {
+			super(CarType.SMALL);
+			construct();
+		}
+
+		@Override
+		protected void construct() {
+			System.out.println("Building small car");
+			// add accessories
+		}
+	}
+	
+	public class SedanCar extends Car {
+
+		SedanCar() {
+			super(CarType.SEDAN);
+			construct();
+		}
+
+		@Override
+		protected void construct() {
+			System.out.println(&quot;Building sedan car&quot;);
+			// add accessories
+		}
+	}
+	
+	public class CarFactory {
+		public static Car buildCar(CarType model) {
+			Car car = null;
+			switch (model) {
+			case SMALL:
+				car = new SmallCar();
+				break;
+
+			case SEDAN:
+				car = new SedanCar();
+				break;
+
+			case LUXURY:
+				car = new LuxuryCar();
+				break;
+
+			default:
+				// throw some exception
+				break;
+			}
+			return car;
+		}
+	}
+	
+	Factory pattern is most suitable where there is some complex object creation steps are involved. To ensure that these steps are centralized and not exposed to composing classes, factory pattern should be used. We can see many realtime examples of factory pattern in JDK itself e.g.
+
+	java.sql.DriverManager#getConnection()
+	java.net.URL#openConnection()
+	java.lang.Class#newInstance()
+	java.lang.Class#forName()
+	
+	Abstract Factory Method Design Pattern - Produce families of related objects without specifying their concrete classes.
+		https://howtodoinjava.com/design-patterns/creational/abstract-factory-pattern-in-java/
+		
+		public abstract class Car {
+		
+		  private CarType model = null;
+		  private Location location = null;
+
+			public Car(CarType model, Location location){
+				this.model = model;
+				this.location = location;
+			}
+		
+		 protected abstract void construct();
+
+		  //getters and setters
+
+		  @Override
+		  public String toString() {
+			return "Model- "+model + " built in "+location;
+		  }
+		}
+		
+		
+		public enum Location {
+		  DEFAULT, USA, ASIA
+		}
+		
+		public class LuxuryCar extends Car
+		{
+		  public LuxuryCar(Location location)
+		  {
+			super(CarType.LUXURY, location);
+			construct();
+		  }
+
+		  @Override
+		  protected void construct() {
+			System.out.println("Building luxury car");
+			//add accessories
+		  }
+		}
+		
+		public class AsiaCarFactory
+		{
+		  public static Car buildCar(CarType model)
+		  {
+			Car car = null;
+			switch (model)
+			{
+			  case SMALL:
+			  car = new SmallCar(Location.ASIA);
+			  break;
+
+			  case SEDAN:
+			  car = new SedanCar(Location.ASIA);
+			  break;
+
+			  case LUXURY:
+			  car = new LuxuryCar(Location.ASIA);
+			  break;
+
+			  default:
+			  //throw some exception
+			  break;
+			}
+			return car;
+		  }
+		}
+		
+		public class DefaultCarFactory
+		{
+		  public static Car buildCar(CarType model)
+		  {
+			Car car = null;
+			switch (model)
+			{
+			  case SMALL:
+			  car = new SmallCar(Location.DEFAULT);
+			  break;
+
+			  case SEDAN:
+			  car = new SedanCar(Location.DEFAULT);
+			  break;
+
+			  case LUXURY:
+			  car = new LuxuryCar(Location.DEFAULT);
+			  break;
+
+			  default:
+			  //throw some exception
+			  break;
+			}
+			return car;
+		  }
+		}
+		
+	public class USACarFactory
+	{
+	  public static Car buildCar(CarType model)
+	  {
+		Car car = null;
+		switch (model)
+		{
+		  case SMALL:
+		  car = new SmallCar(Location.USA);
+		  break;
+
+		  case SEDAN:
+		  car = new SedanCar(Location.USA);
+		  break;
+
+		  case LUXURY:
+		  car = new LuxuryCar(Location.USA);
+		  break;
+
+		  default:
+		  //throw some exception
+		  break;
+		}
+	  return car;
+	  }
+	}
+	
+	public class CarFactory
+	{
+	  private CarFactory() {
+		//Prevent instantiation
+	  }
+
+	  public static Car buildCar(CarType type, Location location)
+	  {
+		Car car = null;
+		//Use location specific car factory
+		switch(location)
+		{
+		  case USA:
+			car = USACarFactory.buildCar(type);
+			break;
+		  case ASIA:
+			car = AsiaCarFactory.buildCar(type);
+			break;
+		  default:
+			car = DefaultCarFactory.buildCar(type);
+		}
+	  return car;
+	  }
+	}
+	Singleton Method Design Pattern - Ensure that a class has only one instance,
+		https://howtodoinjava.com/design-patterns/creational/singleton-design-pattern-in-java/
+	Prototype Method Design Pattern - create new objects with the same structure and initial state as an existing object without explicitly specifying their class or construction details.
+	Builder Method Design Pattern -  Allows constructing complex objects step by step.
+	
+	public class User
+{
+	//All final attributes
+	private final String firstName; // required
+	private final String lastName; // required
+	private final int age; // optional
+	private final String phone; // optional
+	private final String address; // optional
+
+	private User(UserBuilder builder) {
+		this.firstName = builder.firstName;
+		this.lastName = builder.lastName;
+		this.age = builder.age;
+		this.phone = builder.phone;
+		this.address = builder.address;
+	}
+
+	//All getter, and NO setter to provde immutability
+	public String getFirstName() {
+		return firstName;
+	}
+	public String getLastName() {
+		return lastName;
+	}
+	public int getAge() {
+		return age;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public String getAddress() {
+		return address;
+	}
+
+	@Override
+	public String toString() {
+		return "User: "+this.firstName+", "+this.lastName+", "+this.age+", "+this.phone+", "+this.address;
+	}
+
+	public static class UserBuilder
+	{
+		private final String firstName;
+		private final String lastName;
+		private int age;
+		private String phone;
+		private String address;
+
+		public UserBuilder(String firstName, String lastName) {
+			this.firstName = firstName;
+			this.lastName = lastName;
+		}
+		public UserBuilder age(int age) {
+			this.age = age;
+			return this;
+		}
+		public UserBuilder phone(String phone) {
+			this.phone = phone;
+			return this;
+		}
+		public UserBuilder address(String address) {
+			this.address = address;
+			return this;
+		}
+		//Return the finally consrcuted User object
+		public User build() {
+			User user =  new User(this);
+			validateUserObject(user);
+			return user;
+		}
+		private void validateUserObject(User user) {
+			//Do some basic validations to check
+			//if user object does not break any assumption of system
+		}
+	}
+}
+Structural Design Patterns
+	Adapter Method Design Pattern - Used to make two unrelated interfaces can work together. The object, that joins these unrelated interfaces, is called an Adapter.
+		https://www.geeksforgeeks.org/adapter-pattern/?ref=lbp
+	
+	
+	Bridge Method Design Pattern - Decouple an abstraction from its implementation so that the two can vary independently.The bridge design pattern is used to decouple a class into two parts – abstraction and its implementation – so that both can evolve in the future without affecting each other. It increases the loose coupling between class’s abstraction and its implementation.
+		https://www.geeksforgeeks.org/bridge-design-pattern/?ref=lbp
+		https://howtodoinjava.com/design-patterns/structural/bridge-design-pattern/
+	
+	Composite Method Design Pattern
+	
+	Decorator Method Design Pattern
+	https://www.geeksforgeeks.org/decorator-pattern/?ref=lbp
+		 Allows behavior to be added to an individual object, dynamically, without affecting the behavior of other instances of the same class
+
+	Facade Method Design Pattern
+		https://www.geeksforgeeks.org/facade-design-pattern-introduction/?ref=lbp
+		provides a unified interface to a set of interfaces in a subsystem. Facade defines a high-level interface that makes the subsystem easier to use
+		
+	Flyweight Method Design Pattern
+	
+	Proxy Method Design Pattern
+		https://howtodoinjava.com/design-patterns/structural/proxy-design-pattern/
+		providing a way to control access to objects, add functionality, or optimize performance.
+		
+		
+Proxy pattern vs decorator pattern
+	Decorators focus on adding responsibilities, but proxies focus on controlling the access to an object.
+Behavioral Design Patterns
+	Chain Of Responsibility Method Design Pattern
+		https://www.geeksforgeeks.org/chain-responsibility-design-pattern/
+	Command Method Design Pattern
+		
+	Interpreter Method Design Pattern
+	
+	Mediator Method Design Pattern
+		https://howtodoinjava.com/design-patterns/behavioral/mediator-pattern/
+		Defines an object that encapsulates how a set of objects interact. Using mediator pattern, we can reduce the complexity of communication between objects in a system. It promotes loose coupling and reduces number of subclasses in the system.
+	
+	Memento Method Design Patterns
+	Observer Method Design Pattern
+	State Method Design Pattern
+	Strategy Method Design Pattern
+		https://www.geeksforgeeks.org/strategy-pattern-set-1/?ref=lbp
+		Enables selecting an algorithm at runtime. Instead of implementing a single algorithm directly, code receives runtime instructions as to which in a family of algorithms to use
+		
+	Template Method Design Pattern
+		The template method is a method in a superclass, usually an abstract superclass, and defines the skeleton of an operation in terms of a number of high-level steps. These steps are themselves implemented by additional helper methods in the same class as the template method.
+		https://howtodoinjava.com/design-patterns/behavioral/template-method-pattern/
+	Visitor Method Design Pattern
